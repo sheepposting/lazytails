@@ -10,7 +10,6 @@
       --bg: #ffffff;
       --text: #000000;
       --muted: #666666;
-      --accent: #000000;
       --max-width: 720px;
     }
 
@@ -62,7 +61,7 @@
     .now-playing {
       margin-top: 1rem;
       font-size: 0.95rem;
-      color: var(--accent);
+      font-weight: 500;
     }
 
     footer {
@@ -87,8 +86,13 @@
       </audio>
     </div>
 
-    <div class="now-playing" id="now-playing">
-      loading…
+    <!-- ВОТ СЮДА — ПЕРВЫЙ КУСОК (span) -->
+    <div class="now-playing">
+      <span class="cc_streaminfo"
+            data-type="song"
+            data-username="didi">
+        Loading ...
+      </span>
     </div>
 
     <footer>
@@ -96,32 +100,9 @@
     </footer>
   </div>
 
-  <script>
-    const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
-    const nowPlayingEl = document.getElementById("now-playing");
-
-    function updateNowPlaying() {
-      fetch(STATUS_URL, { cache: "no-store" })
-        .then(r => r.json())
-        .then(data => {
-          try {
-            const source = data.icestats.source;
-            const title = Array.isArray(source)
-              ? source[0].title
-              : source.title;
-
-            nowPlayingEl.textContent = title || "—";
-          } catch (e) {
-            nowPlayingEl.textContent = "—";
-          }
-        })
-        .catch(() => {
-          nowPlayingEl.textContent = "—";
-        });
-    }
-
-    updateNowPlaying();
-    setInterval(updateNowPlaying, 10000);
-  </script>
+  <!-- ВОТ СЮДА — ВТОРОЙ КУСОК (script), ПЕРЕД </body> -->
+  <script language="javascript"
+          type="text/javascript"
+          src="https://cast4.asurahosting.com/system/streaminfo.js"></script>
 </body>
 </html>
