@@ -4,31 +4,110 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lazy Tails</title>
+
 <style>
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;color:#000;text-align:center}
-  .wrap{max-width:720px;margin:4rem auto;padding:0 1.25rem}
-  h1{margin:0 0 .25rem;font-size:2.9rem}
-  .lead{margin:0 0 2.5rem;color:#666;font-size:.95rem}
-  .cover{width:70px;height:70px;object-fit:cover;border-radius:16px;display:block;margin:0 auto 1.5rem;background:#eee}
-  .btn{display:inline-flex;align-items:center;justify-content:center;margin-top:1rem;padding:.9rem 2.4rem;border-radius:999px;border:none;font-size:.95rem;font-weight:500;background:#000;color:#fff;cursor:pointer}
-  .btn:focus{outline:2px solid #2684ff;outline-offset:2px}
-  .label{margin-top:1.5rem;font-size:.75rem;letter-spacing:.12em;color:#888;text-transform:uppercase}
-  .now{margin-top:.4rem;font-size:1.1rem;font-weight:600}
-  footer{margin-top:2.5rem;font-size:.8rem;color:#777}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:#fff;
+  color:#000;
+}
+.wrap{
+  max-width:720px;
+  margin:4rem auto;
+  padding:0 1.25rem;
+}
+h1{
+  text-align:center;
+  margin:0 0 .25rem;
+  font-size:1.9rem;
+}
+.lead{
+  text-align:center;
+  margin:0 0 2.5rem;
+  color:#666;
+  font-size:.95rem;
+}
+
+.player-row{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  height:100px;
+}
+
+.cover{
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#eee;
+  flex-shrink:0;
+}
+
+.player-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:6px;
+}
+
+.btn{
+  align-self:flex-start;
+  padding:.45rem 1.4rem;
+  border-radius:999px;
+  border:none;
+  font-size:.85rem;
+  font-weight:500;
+  background:#000;
+  color:#fff;
+  cursor:pointer;
+}
+
+.label{
+  font-size:.65rem;
+  letter-spacing:.12em;
+  color:#888;
+  text-transform:uppercase;
+}
+
+.now{
+  font-size:.95rem;
+  font-weight:600;
+}
+
+footer{
+  text-align:center;
+  margin-top:2.5rem;
+  font-size:.8rem;
+  color:#777;
+}
 </style>
 </head>
+
 <body>
 <div class="wrap">
   <h1>Lazy Tails</h1>
   <div class="lead">Fairytales and winging trails</div>
 
-  <img class="cc_streaminfo cover" data-type="trackimageurl" data-username="didi" alt="Album cover">
+  <div class="player-row">
+    <img class="cc_streaminfo cover"
+         data-type="trackimageurl"
+         data-username="didi"
+         alt="Album cover">
 
-  <button id="playBtn" class="btn">Play</button>
+    <div class="player-info">
+      <button id="playBtn" class="btn">Play</button>
 
-  <div class="label">Now playing</div>
-  <div class="now">
-    <span class="cc_streaminfo" data-type="song" data-username="didi">Loading ...</span>
+      <div class="label">Now playing</div>
+      <div class="now">
+        <span class="cc_streaminfo"
+              data-type="song"
+              data-username="didi">
+          Loading ...
+        </span>
+      </div>
+    </div>
   </div>
 
   <footer>Non-commercial internet radio.</footer>
@@ -39,11 +118,24 @@
 </audio>
 
 <script>
-  const audio=document.getElementById('player');
-  const btn=document.getElementById('playBtn');
-  let playing=false;
-  btn.addEventListener('click',async()=>{if(!playing){try{await audio.play();playing=true;btn.textContent='Pause';}catch(e){}}else{audio.pause();playing=false;btn.textContent='Play';}});
+const audio=document.getElementById('player');
+const btn=document.getElementById('playBtn');
+let playing=false;
+btn.addEventListener('click',async()=>{
+  if(!playing){
+    try{
+      await audio.play();
+      playing=true;
+      btn.textContent='Pause';
+    }catch(e){}
+  }else{
+    audio.pause();
+    playing=false;
+    btn.textContent='Play';
+  }
+});
 </script>
+
 <script src="https://cast4.asurahosting.com/system/streaminfo.js"></script>
 </body>
 </html>
