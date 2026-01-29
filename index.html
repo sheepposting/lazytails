@@ -42,23 +42,16 @@
       color:var(--muted);
       margin-top:0.25rem;
     }
-    .status {
-      margin-top:1rem;
-      font-size:1rem;
-    }
     .player {
-      margin-top:1.25rem;
+      margin-top:1.75rem;
     }
-    #offline {
-      padding:1rem 1.25rem;
-      border:1px dashed #ddd;
-      border-radius:8px;
+    audio {
+      width:100%;
+    }
+    .status {
+      margin-top:0.75rem;
+      font-size:0.95rem;
       color:var(--muted);
-    }
-    .meta {
-      margin-top:0.6rem;
-      font-weight:600;
-      color:var(--accent);
     }
     footer {
       margin-top:2rem;
@@ -69,3 +62,34 @@
       :root {
         --bg:#0f1113;
         --text:#e6eef8;
+        --muted:#9aa6b2;
+        --accent:#66b0ff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Lazy Tails</h1>
+      <div class="lead">Fairytales and winging trails</div>
+    </header>
+
+    <div class="player">
+      <!-- ПРЯМОЙ ПЛЕЕР С ТВОИМ СТРИМОМ -->
+      <audio controls autoplay>
+        <source src="https://cast4.asurahosting.com/start/didi" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <div class="status">
+      Non-commercial experimental internet radio stream.
+    </div>
+
+    <footer>
+      <div class="hint">Broadcasting via Asura Hosting · Site on GitHub Pages.</div>
+    </footer>
+  </div>
+</body>
+</html>
