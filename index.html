@@ -1,158 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lazy Tails</title>
-
-  <style>
-    :root {
-      --bg: #ffffff;
-      --text: #000000;
-      --muted: #666666;
-      --max-width: 720px;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    }
-
-    .wrap {
-      max-width: var(--max-width);
-      margin: 4rem auto;
-      padding: 0 1.25rem;
-      text-align: center;
-    }
-
-    header {
-      margin-bottom: 2rem;
-    }
-
-    .logo {
-      max-width: 220px;
-      margin: 0 auto 1.25rem;
-      display: block;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-
-    .lead {
-      margin-top: 0.4rem;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    .player {
-      margin-top: 2rem;
-    }
-
-    audio {
-      width: 100%;
-    }
-
-    .now-playing-label {
-      margin-top: 1.25rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .now-playing {
-      margin-top: 0.35rem;
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-
-    footer {
-      margin-top: 2.5rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lazy Tails</title>
+<style>
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#fff;color:#000;text-align:center}
+  .wrap{max-width:720px;margin:4rem auto;padding:0 1.25rem}
+  h1{margin:0 0 .25rem;font-size:1.7rem}
+  .lead{margin:0 0 2rem;color:#666;font-size:.95rem}
+  audio{width:100%}
+  .label{margin-top:1.5rem;font-size:.75rem;letter-spacing:.12em;color:#888;text-transform:uppercase}
+  .now{margin-top:.4rem;font-size:.98rem;font-weight:500}
+  footer{margin-top:2.5rem;font-size:.8rem;color:#777}
+</style>
 </head>
-
 <body>
-  <div class="wrap">
-    <header>
-      <img src="logo.png" alt="Lazy Tails logo" class="logo" />
-      <h1>Lazy Tails</h1>
-      <div class="lead">Fairytales and winging trails</div>
-    </header>
+<div class="wrap">
+  <h1>Lazy Tails</h1>
+  <div class="lead">Fairytales and winging trails</div>
 
-    <div class="player">
-      <audio controls>
-        <source src="https://cast4.asurahosting.com/proxy/didi/stream" type="audio/mpeg" />
-      </audio>
-    </div>
+  <audio controls>
+    <source src="https://cast4.asurahosting.com/proxy/didi/stream" type="audio/mpeg">
+  </audio>
 
-    <div class="now-playing-label">NOW PLAYING</div>
-    <div class="now-playing" id="now-playing">loading…</div>
-
-    <footer>
-      Non-commercial internet radio.
-    </footer>
+  <div class="label">Now playing</div>
+  <div class="now">
+    <span class="cc_streaminfo" data-type="song" data-username="didi">Loading ...</span>
   </div>
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
-      const nowPlayingEl = document.getElementById("now-playing");
+  <footer>Non-commercial internet radio.</footer>
+</div>
 
-      if (!nowPlayingEl) {
-        console.warn("LazyTails: элемент now-playing не найден");
-        return;
-      }
-
-      async function updateNowPlaying() {
-        try {
-          console.log("LazyTails: запрос статуса…");
-          const res = await fetch(STATUS_URL + "?_=" + Date.now(), {
-            cache: "no-store"
-          });
-
-          const text = await res.text();
-          console.log("LazyTails: ответ статуса:", text);
-
-          let data;
-          try {
-            data = JSON.parse(text);
-          } catch (e) {
-            console.warn("LazyTails: не удалось распарсить JSON:", e);
-            nowPlayingEl.textContent = "Live broadcast";
-            return;
-          }
-
-          let source = data.icestats && data.icestats.source;
-          if (Array.isArray(source)) {
-            source = source[0];
-          }
-
-          const rawTitle = source && source.title;
-          const title = rawTitle && rawTitle.trim();
-
-          if (title) {
-            nowPlayingEl.textContent = title;
-          } else {
-            nowPlayingEl.textContent = "Live broadcast";
-          }
-        } catch (e) {
-          console.warn("LazyTails: ошибка запроса статуса:", e);
-          nowPlayingEl.textContent = "Live broadcast";
-        }
-      }
-
-      updateNowPlaying();
-      setInterval(updateNowPlaying, 10000);
-    });
-  </script>
+<script src="https://cast4.asurahosting.com/system/streaminfo.js"></script>
 </body>
 </html>
