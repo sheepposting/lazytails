@@ -94,7 +94,7 @@
       </audio>
     </div>
 
-    <div class="now-playing-label">Now playing</div>
+    <div class="now-playing-label">NOW PLAYING</div>
     <div class="now-playing" id="now-playing">loading…</div>
 
     <footer>
@@ -103,37 +103,56 @@
   </div>
 
   <script>
-    // HTTPS JSON-статус Icecast через прокси Asura
-    const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
-    const nowPlayingEl = document.getElementById("now-playing");
+    window.addEventListener('DOMContentLoaded', () => {
+      const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
+      const nowPlayingEl = document.getElementById("now-playing");
 
-    async function updateNowPlaying() {
-      try {
-        const res = await fetch(STATUS_URL + "?_=" + Date.now(), {
-          cache: "no-store"
-        });
-        const data = await res.json();
+      if (!nowPlayingEl) {
+        console.warn("LazyTails: элемент now-playing не найден");
+        return;
+      }
 
-        // Структура Icecast: icestats.source может быть объектом или массивом
-        let source = data.icestats && data.icestats.source;
-        if (Array.isArray(source)) {
-          source = source[0];
-        }
+      async function updateNowPlaying() {
+        try {
+          console.log("LazyTails: запрос статуса…");
+          const res = await fetch(STATUS_URL + "?_=" + Date.now(), {
+            cache: "no-store"
+          });
 
-        const title = source && source.title;
+          const text = await res.text();
+          console.log("LazyTails: ответ статуса:", text);
 
-        if (title && title.trim() !== "") {
-          nowPlayingEl.textContent = title;
-        } else {
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (e) {
+            console.warn("LazyTails: не удалось распарсить JSON:", e);
+            nowPlayingEl.textContent = "Live broadcast";
+            return;
+          }
+
+          let source = data.icestats && data.icestats.source;
+          if (Array.isArray(source)) {
+            source = source[0];
+          }
+
+          const rawTitle = source && source.title;
+          const title = rawTitle && rawTitle.trim();
+
+          if (title) {
+            nowPlayingEl.textContent = title;
+          } else {
+            nowPlayingEl.textContent = "Live broadcast";
+          }
+        } catch (e) {
+          console.warn("LazyTails: ошибка запроса статуса:", e);
           nowPlayingEl.textContent = "Live broadcast";
         }
-      } catch (e) {
-        nowPlayingEl.textContent = "Live broadcast";
       }
-    }
 
-    updateNowPlaying();
-    setInterval(updateNowPlaying, 10000);
+      updateNowPlaying();
+      setInterval(updateNowPlaying, 10000);
+    });
   </script>
 </body>
 </html>
