@@ -4,63 +4,124 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lazy Tails</title>
+
   <style>
     :root {
-      --max-width:900px;
-      --muted:#666;
-      --bg:#fff;
-      --text:#111;
-      --accent:#0077cc;
+      --bg: #ffffff;
+      --text: #000000;
+      --muted: #666666;
+      --accent: #000000;
+      --max-width: 720px;
     }
-    html,body {
-      height:100%;
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     }
+
     .wrap {
-      max-width:var(--max-width);
-      margin:3rem auto;
-      padding:1rem;
-      box-sizing:border-box;
-      text-align:center;
+      max-width: var(--max-width);
+      margin: 4rem auto;
+      padding: 0 1.25rem;
+      text-align: center;
     }
+
     header {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:1rem;
-      flex-direction:column;
+      margin-bottom: 2rem;
     }
-    h1 { margin:0; font-size:1.6rem; letter-spacing:0.2px; }
-    .lead { color:var(--muted); margin-top:0.25rem; }
-    .player { margin-top:1.75rem; }
-    audio { width:100%; }
-    .status { margin-top:0.75rem; font-size:0.95rem; color:var(--muted); }
-    footer { margin-top:2rem; font-size:0.85rem; color:var(--muted); }
-    @media (prefers-color-scheme:dark) {
-      :root { --bg:#0f1113; --text:#e6eef8; --muted:#9aa6b2; --accent:#66b0ff; }
+
+    .logo {
+      max-width: 220px;
+      margin: 0 auto 1.25rem;
+      display: block;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .lead {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .player {
+      margin-top: 2rem;
+    }
+
+    audio {
+      width: 100%;
+    }
+
+    .now-playing {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
+      <img src="logo.png" alt="Lazy Tails logo" class="logo" />
       <h1>Lazy Tails</h1>
       <div class="lead">Fairytales and winging trails</div>
     </header>
 
     <div class="player">
-      <audio controls autoplay>
+      <audio controls>
         <source src="https://cast4.asurahosting.com/proxy/didi/stream" type="audio/mpeg" />
-        Your browser does not support the audio element.
       </audio>
     </div>
 
-    <div class="status">
-      Non-commercial experimental internet radio stream.
+    <div class="now-playing" id="now-playing">
+      loading…
     </div>
 
     <footer>
-      <div
+      Non-commercial experimental internet radio.
+    </footer>
+  </div>
+
+  <script>
+    const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
+    const nowPlayingEl = document.getElementById("now-playing");
+
+    function updateNowPlaying() {
+      fetch(STATUS_URL, { cache: "no-store" })
+        .then(r => r.json())
+        .then(data => {
+          try {
+            const source = data.icestats.source;
+            const title = Array.isArray(source)
+              ? source[0].title
+              : source.title;
+
+            nowPlayingEl.textContent = title || "—";
+          } catch (e) {
+            nowPlayingEl.textContent = "—";
+          }
+        })
+        .catch(() => {
+          nowPlayingEl.textContent = "—";
+        });
+    }
+
+    updateNowPlaying();
+    setInterval(updateNowPlaying, 10000);
+  </script>
+</body>
+</html>
