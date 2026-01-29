@@ -58,8 +58,16 @@
       width: 100%;
     }
 
+    .now-playing-label {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
     .now-playing {
-      margin-top: 1rem;
+      margin-top: 0.35rem;
       font-size: 0.95rem;
       font-weight: 500;
     }
@@ -86,23 +94,46 @@
       </audio>
     </div>
 
-    <!-- ВОТ СЮДА — ПЕРВЫЙ КУСОК (span) -->
-    <div class="now-playing">
-      <span class="cc_streaminfo"
-            data-type="song"
-            data-username="didi">
-        Loading ...
-      </span>
-    </div>
+    <div class="now-playing-label">Now playing</div>
+    <div class="now-playing" id="now-playing">loading…</div>
 
     <footer>
       Non-commercial experimental internet radio.
     </footer>
   </div>
 
-  <!-- ВОТ СЮДА — ВТОРОЙ КУСОК (script), ПЕРЕД </body> -->
-  <script language="javascript"
-          type="text/javascript"
-          src="https://cast4.asurahosting.com/system/streaminfo.js"></script>
+  <script>
+    // HTTPS JSON-статус Icecast через прокси Asura
+    const STATUS_URL = "https://cast4.asurahosting.com/proxy/didi/status-json.xsl";
+    const nowPlayingEl = document.getElementById("now-playing");
+
+    async function updateNowPlaying() {
+      try {
+        const res = await fetch(STATUS_URL + "?_=" + Date.now(), {
+          cache: "no-store"
+        });
+        const data = await res.json();
+
+        // Структура Icecast: icestats.source может быть объектом или массивом
+        let source = data.icestats && data.icestats.source;
+        if (Array.isArray(source)) {
+          source = source[0];
+        }
+
+        const title = source && source.title;
+
+        if (title && title.trim() !== "") {
+          nowPlayingEl.textContent = title;
+        } else {
+          nowPlayingEl.textContent = "Live broadcast";
+        }
+      } catch (e) {
+        nowPlayingEl.textContent = "Live broadcast";
+      }
+    }
+
+    updateNowPlaying();
+    setInterval(updateNowPlaying, 10000);
+  </script>
 </body>
 </html>
