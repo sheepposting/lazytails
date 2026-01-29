@@ -5,83 +5,67 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lazy Tails</title>
   <style>
-    :root { --max-width:900px; --muted:#666; --bg:#fff; --text:#111; --accent:#0077cc; }
-    html,body { height:100%; margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial; }
-    .wrap { max-width:var(--max-width); margin:3rem auto; padding:1rem; box-sizing:border-box; text-align:center; }
-    header { display:flex; align-items:center; justify-content:center; gap:1rem; flex-direction:column; }
-    h1 { margin:0; font-size:1.6rem; letter-spacing:0.2px; }
-    .lead { color:var(--muted); margin-top:0.25rem; }
-    .status { margin-top:1rem; font-size:1rem; }
-    .player { margin-top:1.25rem; }
-    #offline { padding:1rem 1.25rem; border:1px dashed #ddd; border-radius:8px; color:var(--muted); }
-    .meta { margin-top:0.6rem; font-weight:600; color:var(--accent); }
-    footer { margin-top:2rem; font-size:0.85rem; color:var(--muted); }
+    :root {
+      --max-width:900px;
+      --muted:#666;
+      --bg:#fff;
+      --text:#111;
+      --accent:#0077cc;
+    }
+    html,body {
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    }
+    .wrap {
+      max-width:var(--max-width);
+      margin:3rem auto;
+      padding:1rem;
+      box-sizing:border-box;
+      text-align:center;
+    }
+    header {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1rem;
+      flex-direction:column;
+    }
+    h1 {
+      margin:0;
+      font-size:1.6rem;
+      letter-spacing:0.2px;
+    }
+    .lead {
+      color:var(--muted);
+      margin-top:0.25rem;
+    }
+    .status {
+      margin-top:1rem;
+      font-size:1rem;
+    }
+    .player {
+      margin-top:1.25rem;
+    }
+    #offline {
+      padding:1rem 1.25rem;
+      border:1px dashed #ddd;
+      border-radius:8px;
+      color:var(--muted);
+    }
+    .meta {
+      margin-top:0.6rem;
+      font-weight:600;
+      color:var(--accent);
+    }
+    footer {
+      margin-top:2rem;
+      font-size:0.85rem;
+      color:var(--muted);
+    }
     @media (prefers-color-scheme:dark) {
-      :root { --bg:#0f1113; --text:#e6eef8; --muted:#9aa6b2; --accent:#66b0ff; }
-      #offline { border-color:#222; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>Lazy Tails</h1>
-      <div class="lead">Fairytales and winging trails</div>
-    </header>
-
-    <div class="status">
-      Now playing: <span id="meta">—</span>
-    </div>
-
-    <div class="player" id="player-wrapper">
-      <div id="offline">Station is currently offline.</div>
-    </div>
-
-    <footer>
-      <div class="hint">Non-commercial broadcasting station.</div>
-    </footer>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script>
-    // Set STREAM_URL to your stream URL when available (example formats: "https://example.com:8000/mount" or "https://example.com/stream.m3u8")
-    const STREAM_URL = "";
-
-    const wrapper = document.getElementById('player-wrapper');
-    const metaEl = document.getElementById('meta');
-    const offlineEl = document.getElementById('offline');
-
-    function createPlayer(url) {
-      if (!url) return;
-      if (offlineEl) offlineEl.remove();
-
-      const audio = document.createElement('audio');
-      audio.id = 'player';
-      audio.controls = true;
-      audio.autoplay = false;
-      audio.crossOrigin = 'anonymous';
-      audio.style.width = '100%';
-      wrapper.appendChild(audio);
-
-      if (window.Hls && Hls.isSupported() && url.endsWith('.m3u8')) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(audio);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(()=>{}));
-      } else {
-        audio.src = url;
-        audio.play().catch(()=>{});
-      }
-
-      metaEl.textContent = 'connecting...';
-      // Metadata fetching can be added here if streaming server provides a status endpoint with CORS.
-    }
-
-    if (!STREAM_URL) {
-      metaEl.textContent = 'offline';
-    } else {
-      createPlayer(STREAM_URL);
-    }
-  </script>
-</body>
-</html>
+      :root {
+        --bg:#0f1113;
+        --text:#e6eef8;
